@@ -14,33 +14,38 @@ def index():
     if request.method == 'POST':
         try:
             topic = request.form['topic']
+            lang = request.form.get('lang', 'ar')  # Default to Arabic
+            
             if not topic:
                 return render_template('index.html', error="يرجى إدخال موضوع البحث")
             
-            filename = f"research_{topic.replace(' ', '_').lower()}.docx"
+            filename = f"research_{topic.replace(' ', '_').lower()}_{lang}.docx"
             filepath = os.path.join(RESEARCH_DIR, filename)
-            content = generate_research_content(topic)
+            content = generate_research_content(topic, lang)
             
             if content:
-                create_document(content, filepath)
+                create_document(content, filepath, lang)
                 success_message = "تم إنشاء البحث بنجاح!"
                 return render_template('index.html', 
                     success=success_message,
                     topic=topic,
+                    lang=lang,
                     download_file=filename)
             else:
                 return render_template('index.html', 
                     error="عذراً، حدث خطأ أثناء إنشاء المحتوى. يرجى المحاولة مرة أخرى.",
-                    topic=topic)
+                    topic=topic,
+                    lang=lang)
                 
         except Exception as e:
             print(f"Error: {str(e)}")
             print(traceback.format_exc())
             return render_template('index.html', 
                 error="عذراً، حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.",
-                topic=topic)
+                topic=topic if 'topic' in locals() else '',
+                lang=lang if 'lang' in locals() else 'ar')
     
-    return render_template('index.html')
+    return render_template('index.html', lang='ar')
 
 @app.route('/download/<filename>')
 def download_file(filename):

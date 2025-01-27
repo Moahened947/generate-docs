@@ -96,6 +96,14 @@
                            required>
                 </div>
                 
+                <div class="mb-4">
+                    <label for="lang" class="form-label">لغة البحث:</label>
+                    <select class="form-select" id="lang" name="lang">
+                        <option value="ar" {% if lang == 'ar' %}selected{% endif %}>العربية</option>
+                        <option value="en" {% if lang == 'en' %}selected{% endif %}>English</option>
+                    </select>
+                </div>
+
                 <div class="text-center">
                     <button type="submit" class="btn btn-primary">
                         إنشاء البحث
