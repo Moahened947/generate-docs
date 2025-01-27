@@ -72,65 +72,127 @@ def generate_research_content(topic, lang='ar'):
     """Generate research content using Google Gemini."""
     if lang == 'ar':
         prompt = f"""
-        قم بإنشاء بحث شامل باللغة العربية حول موضوع: {topic}
-        يجب أن يكون المحتوى بتنسيق JSON كما يلي:
+قم بإعداد بحث علمي شامل باللغة العربية حول الموضوع: {topic}
+يجب أن يتم تقديم المحتوى بتنسيق JSON منظم على النحو التالي:
+{{
+    "title": "عنوان البحث الرئيسي",
+    "sections": [
         {{
-            "title": "عنوان البحث الرئيسي",
-            "sections": [
-                {{
-                    "heading": "عنوان القسم",
-                    "content": "محتوى القسم"
-                }}
-            ]
+            "heading": "عنوان القسم",
+            "content": "محتوى القسم"
         }}
-        
-        يجب أن يتضمن البحث الأقسام التالية بالترتيب:
-        1. مقدمة
-        2. المفاهيم والتعريفات الأساسية
-        3. الوضع الحالي والتطورات
-        4. التطبيقات وحالات الاستخدام
-        5. الآفاق المستقبلية
-        6. الخاتمة
-        
-        يجب أن يكون المحتوى:
-        - باللغة العربية الفصحى
-        - شاملاً ومفصلاً
-        - مكتوباً بأسلوب علمي
-        - خالياً من الأخطاء اللغوية
-        - منظماً بشكل منطقي
-        
-        استخدم النقاط (-) للقوائم إذا لزم الأمر.
-        تجنب استخدام الرموز الخاصة أو التنسيقات المعقدة.
-        """
+    ]
+}}
+
+يجب أن يتضمن البحث الأقسام الأكاديمية التالية مرتبة بالترتيب:
+1. **مقدمة عامة**:
+    - تقديم خلفية عامة عن الموضوع.
+    - توضيح أهمية الموضوع ودوافع البحث فيه.
+    - صياغة أهداف البحث والأسئلة التي يحاول الإجابة عليها.
+
+2. **الإطار النظري والمفاهيم الأساسية**:
+    - تعريف المصطلحات والمفاهيم الرئيسية.
+    - عرض النظريات والمبادئ ذات الصلة بالموضوع.
+
+3. **منهجية البحث**:
+    - شرح المنهجية المستخدمة (تحليلية، وصفية، مقارنة، إلخ).
+    - توضيح مصادر المعلومات (كتب، مقالات، بيانات، إلخ).
+
+4. **الوضع الراهن والتطورات الحديثة**:
+    - استعراض أبرز الأبحاث والدراسات السابقة في المجال.
+    - تحليل الوضع الحالي وتقديم إحصاءات أو بيانات تدعم الفهم.
+
+5. **التحديات والقضايا المطروحة**:
+    - مناقشة التحديات أو المشكلات التي تواجه المجال.
+    - استعراض وجهات النظر المختلفة حول القضايا المطروحة.
+
+6. **التطبيقات العملية وحالات الاستخدام**:
+    - شرح التطبيقات الحالية للموضوع.
+    - تقديم أمثلة عملية ودراسات حالة.
+
+7. **الرؤى المستقبلية والتوصيات**:
+    - استشراف المستقبل بناءً على المعطيات الحالية.
+    - تقديم توصيات مبنية على التحليل.
+
+8. **الخاتمة**:
+    - تلخيص أهم النقاط والنتائج.
+    - الإجابة على أسئلة البحث المطروحة.
+    - اقتراح مجالات للبحث المستقبلي.
+
+المتطلبات الخاصة بالمحتوى:
+- أن يكون مكتوبًا باللغة العربية الفصحى.
+- أن يغطي الموضوع بشكل شامل ومتكامل.
+- أن يُكتب بأسلوب أكاديمي يعتمد التحليل والاستدلال.
+- أن يكون منظمًا ومترابطًا وخاليًا من الأخطاء اللغوية.
+
+تعليمات إضافية:
+- استخدم النقاط (-) لتنسيق القوائم عند الحاجة.
+- تجنب استخدام الرموز الخاصة أو التنسيقات المعقدة.
+- احرص على الالتزام بمنهجية الكتابة العلمية.
+"""
+
     else:
         prompt = f"""
-        Create a comprehensive research document about {topic}.
-        Respond with a JSON object containing a title and sections.
-        Keep the JSON structure simple and avoid special characters or complex formatting.
-        
-        Example format:
+Create a comprehensive research document on the topic: {topic}.
+The response must be in a JSON format structured as follows:
+{{
+    "title": "Research Title",
+    "sections": [
         {{
-            "title": "Your Title Here",
-            "sections": [
-                {{
-                    "heading": "Section Heading",
-                    "content": "Section content in plain text."
-                }}
-            ]
+            "heading": "Section Heading",
+            "content": "Section content in plain text."
         }}
-        
-        Include these sections in order:
-        1. Introduction
-        2. Main concepts and definitions
-        3. Current state and developments
-        4. Applications and use cases
-        5. Future prospects
-        6. Conclusion
-        
-        Make sure each section is detailed and informative.
-        Use simple bullet points with hyphens (-) if needed.
-        Avoid using special characters or complex formatting.
-        """
+    ]
+}}
+
+Ensure the research includes the following academically structured sections in order:
+
+1. **Introduction**:
+    - Provide an overview of the topic.
+    - Explain the significance of the topic and the rationale for studying it.
+    - State the research objectives and the key questions it aims to address.
+
+2. **Theoretical Framework and Key Concepts**:
+    - Define critical terms and concepts related to the topic.
+    - Present relevant theories and foundational principles.
+
+3. **Research Methodology**:
+    - Describe the research approach (e.g., analytical, descriptive, comparative, etc.).
+    - Outline the sources of information (e.g., books, articles, datasets).
+
+4. **Current State and Recent Developments**:
+    - Review the latest studies and findings in the field.
+    - Analyze the current trends and provide relevant data or statistics.
+
+5. **Challenges and Key Issues**:
+    - Highlight the main challenges or problems in the field.
+    - Discuss varying perspectives and debates surrounding these issues.
+
+6. **Applications and Use Cases**:
+    - Detail practical applications of the topic.
+    - Provide specific examples or case studies.
+
+7. **Future Outlook and Recommendations**:
+    - Forecast future trends based on current developments.
+    - Offer recommendations or actionable insights derived from the research.
+
+8. **Conclusion**:
+    - Summarize the main points and findings.
+    - Address the initial research questions.
+    - Suggest areas for further research.
+
+Content Requirements:
+- Use clear and concise language.
+- Ensure the writing is thorough and academically sound.
+- Avoid errors in grammar and spelling.
+- Present the content logically and cohesively.
+
+Additional Instructions:
+- Use hyphens (-) for bullet points when necessary.
+- Avoid using special characters or overly complex formatting.
+- Adhere to academic writing standards and maintain a formal tone.
+"""
+
     
     response_text = ""
     try:
