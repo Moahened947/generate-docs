@@ -35,13 +35,23 @@ def create_document(content, filename, lang='ar'):
     # Set RTL direction for Arabic
     is_rtl = lang == 'ar'
     
+    # Set document direction for Arabic
+    if is_rtl:
+        # Set RTL as the default paragraph direction
+        doc.styles['Normal'].paragraph_format.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+        # Enable RTL for the document
+        section = doc.sections[0]._sectPr
+        section.set("{http://schemas.openxmlformats.org/wordprocessingml/2006/main}bidi", "1")
+    
     # Add title
     title = doc.add_heading(level=1)
-    title.alignment = WD_ALIGN_PARAGRAPH.RIGHT if is_rtl else WD_ALIGN_PARAGRAPH.CENTER
+    title.alignment = WD_ALIGN_PARAGRAPH.CENTER
     title_run = title.add_run(content['title'])
     title_run.font.size = Pt(16)
     if is_rtl:
         set_rtl_font(title_run)
+        # Enable RTL for the title paragraph
+        title._p.get_or_add_pPr().set("{http://schemas.openxmlformats.org/wordprocessingml/2006/main}bidi", "1")
     
     # Add content sections
     for section in content['sections']:
@@ -52,6 +62,8 @@ def create_document(content, filename, lang='ar'):
         heading_run.font.size = Pt(14)
         if is_rtl:
             set_rtl_font(heading_run)
+            # Enable RTL for the heading paragraph
+            heading._p.get_or_add_pPr().set("{http://schemas.openxmlformats.org/wordprocessingml/2006/main}bidi", "1")
         
         # Add section content
         paragraph = doc.add_paragraph()
@@ -63,6 +75,10 @@ def create_document(content, filename, lang='ar'):
         content_run.font.size = Pt(12)
         if is_rtl:
             set_rtl_font(content_run)
+            # Enable RTL for the content paragraph
+            paragraph._p.get_or_add_pPr().set("{http://schemas.openxmlformats.org/wordprocessingml/2006/main}bidi", "1")
+            # Add additional RTL attributes
+            paragraph._p.get_or_add_pPr().set("{http://schemas.openxmlformats.org/wordprocessingml/2006/main}textDirection", "rtl")
     
     # Save document
     doc.save(filename)

@@ -70,4 +70,4 @@ def download_file(filename):
             error="عذراً، حدث خطأ أثناء تحميل الملف. يرجى المحاولة مرة أخرى.")
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0', port=5000)
