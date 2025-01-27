@@ -15,27 +15,30 @@ def index():
         try:
             topic = request.form['topic']
             lang = request.form.get('lang', 'ar')  # Default to Arabic
+            doc_type = request.form.get('doc_type', 'academic')  # Default to academic
             
             if not topic:
-                return render_template('index.html', error="يرجى إدخال موضوع البحث")
+                return render_template('index.html', error="يرجى إدخال موضوع المستند")
             
-            filename = f"research_{topic.replace(' ', '_').lower()}_{lang}.docx"
+            filename = f"{doc_type}_{topic.replace(' ', '_').lower()}_{lang}.docx"
             filepath = os.path.join(RESEARCH_DIR, filename)
-            content = generate_research_content(topic, lang)
+            content = generate_research_content(topic, lang, doc_type)
             
             if content:
                 create_document(content, filepath, lang)
-                success_message = "تم إنشاء البحث بنجاح!"
+                success_message = "تم إنشاء المستند بنجاح!"
                 return render_template('index.html', 
                     success=success_message,
                     topic=topic,
                     lang=lang,
+                    doc_type=doc_type,
                     download_file=filename)
             else:
                 return render_template('index.html', 
                     error="عذراً، حدث خطأ أثناء إنشاء المحتوى. يرجى المحاولة مرة أخرى.",
                     topic=topic,
-                    lang=lang)
+                    lang=lang,
+                    doc_type=doc_type)
                 
         except Exception as e:
             print(f"Error: {str(e)}")
@@ -43,9 +46,10 @@ def index():
             return render_template('index.html', 
                 error="عذراً، حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.",
                 topic=topic if 'topic' in locals() else '',
-                lang=lang if 'lang' in locals() else 'ar')
+                lang=lang if 'lang' in locals() else 'ar',
+                doc_type=doc_type if 'doc_type' in locals() else 'academic')
     
-    return render_template('index.html', lang='ar')
+    return render_template('index.html', lang='ar', doc_type='academic')
 
 @app.route('/download/<filename>')
 def download_file(filename):
@@ -53,7 +57,7 @@ def download_file(filename):
         filepath = os.path.join(RESEARCH_DIR, filename)
         if not os.path.exists(filepath):
             return render_template('index.html', 
-                error="عذراً، الملف غير موجود. يرجى إعادة إنشاء البحث.")
+                error="عذراً، الملف غير موجود. يرجى إعادة إنشاء المستند.")
         
         return send_file(
             filepath,
