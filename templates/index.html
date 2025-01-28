@@ -105,51 +105,69 @@
             color: #666;
             margin-top: 0.5rem;
         }
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            min-width: 300px;
+        }
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+        }
     </style>
 </head>
 <body>
+    <!-- Toast Container -->
+    <div class="toast-container">
+        {% if error %}
+        <div class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    {{ error }}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if success %}
+        <div class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="fas fa-check-circle me-2"></i>
+                    تم إنشاء الملف بنجاح
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
     <div class="container">
         <div class="card">
             <h1 class="text-center mb-4">مولد الأبحاث والتقارير الذكي</h1>
             <p class="text-center mb-4">أدخل موضوع البحث وسيتم إنشاء ملف Word منسق تلقائياً</p>
-            
-            {% if error %}
-            <div class="alert alert-danger" role="alert">
-                {{ error }}
-            </div>
-            {% endif %}
 
             <form id="researchForm" method="POST" onsubmit="showLoading()">
-                <div class="doc-type-selector mb-4">
-                    <label class="form-label fw-bold mb-3">نوع المستند:</label>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-check" onclick="selectDocType(this, 'academic')">
-                                <input class="form-check-input" type="radio" name="doc_type" id="academic" 
-                                       value="academic" {% if doc_type == 'academic' %}checked{% endif %} required>
-                                <label class="form-check-label" for="academic">
-                                    <i class="fas fa-graduation-cap me-2"></i>
-                                    بحث أكاديمي
-                                </label>
-                                <div class="doc-type-description">
-                                    بحث علمي منظم يتبع المنهجية الأكاديمية ويشمل الإطار النظري والمنهجية والنتائج
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-check" onclick="selectDocType(this, 'report')">
-                                <input class="form-check-input" type="radio" name="doc_type" id="report" 
-                                       value="report" {% if doc_type == 'report' %}checked{% endif %} required>
-                                <label class="form-check-label" for="report">
-                                    <i class="fas fa-file-alt me-2"></i>
-                                    تقرير احترافي
-                                </label>
-                                <div class="doc-type-description">
-                                    تقرير تنفيذي يركز على التحليل العملي والتوصيات والحلول المقترحة
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="mb-4">
+                    <label for="doc_type" class="form-label">نوع المستند:</label>
+                    <select class="form-select" id="doc_type" name="doc_type">
+                        <option value="academic" {% if doc_type == 'academic' %}selected{% endif %}>بحث علمي</option>
+                        <optgroup label="تقارير">
+                            <option value="technical_report" {% if doc_type == 'technical_report' %}selected{% endif %}>تقرير فني</option>
+                            <option value="administrative_report" {% if doc_type == 'administrative_report' %}selected{% endif %}>تقرير إداري</option>
+                            <option value="scientific_report" {% if doc_type == 'scientific_report' %}selected{% endif %}>تقرير علمي</option>
+                            <option value="financial_report" {% if doc_type == 'financial_report' %}selected{% endif %}>تقرير مالي</option>
+                            <option value="project_report" {% if doc_type == 'project_report' %}selected{% endif %}>تقرير مشروع</option>
+                        </optgroup>
+                    </select>
                 </div>
 
                 <div class="mb-4">
@@ -157,7 +175,13 @@
                     <input type="text" class="form-control" id="topic" name="topic" 
                            value="{{ topic if topic else '' }}" required>
                 </div>
-                
+
+                <div class="mb-4">
+                    <label for="instructions" class="form-label">التعليمات (اختياري):</label>
+                    <textarea class="form-control" id="instructions" name="instructions" rows="4" 
+                    placeholder="أدخل تعليماتك الخاصة هنا. مثال: أريد التركيز على التحديات المستقبلية وتضمين إحصائيات حديثة.">{{ instructions }}</textarea>
+                </div>
+
                 <div class="mb-4">
                     <label for="lang" class="form-label">لغة المستند:</label>
                     <select class="form-select" id="lang" name="lang">
@@ -186,10 +210,7 @@
             </div>
 
             {% if success %}
-            <div class="alert alert-success mt-3" role="alert">
-                <h4 class="alert-heading mb-3">{{ success }}</h4>
-                <p>تم إنشاء الملف بنجاح. يمكنك تحميله الآن.</p>
-                <hr>
+            <div class="text-center mt-4">
                 <div class="d-flex justify-content-center gap-2">
                     <a href="{{ url_for('download_file', filename=download_file) }}" 
                        class="btn btn-success">
@@ -212,14 +233,24 @@
             document.getElementById('researchForm').style.opacity = '0.5';
         }
 
+        // Initialize all toasts
+        document.addEventListener('DOMContentLoaded', function() {
+            var toastElList = [].slice.call(document.querySelectorAll('.toast'));
+            var toastList = toastElList.map(function(toastEl) {
+                var toast = new bootstrap.Toast(toastEl, {
+                    autohide: true,
+                    delay: 5000
+                });
+                toast.show();
+                return toast;
+            });
+        });
+
         function selectDocType(element, type) {
-            // Remove selected class from all form-checks
             document.querySelectorAll('.form-check').forEach(el => {
                 el.classList.remove('selected');
             });
-            // Add selected class to clicked element
             element.classList.add('selected');
-            // Check the radio button
             document.getElementById(type).checked = true;
         }
     </script>
